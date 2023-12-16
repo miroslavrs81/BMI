@@ -10,6 +10,7 @@ import {
 import { Workout } from './workout.entity';
 import { UserWorkout } from './user-workout.entity';
 import { Task } from './task.entity';
+import { ValidationCode } from './validation-code.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -24,6 +25,9 @@ export class User {
 
   @OneToMany(() => Task, (task) => task.user)
   tasks: Task[];
+
+  @OneToMany(() => ValidationCode, (code) => code.user)
+  code: ValidationCode;
 
   @Column({ type: 'varchar', length: 50 })
   name: string;
