@@ -5,12 +5,15 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserDto } from './dto/register.dto';
 import { returnMessages } from 'src/helpers/error-message-mapper.helper';
+import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from './dto/loginUser.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   async register(createUserDto: UserDto) {
@@ -31,9 +34,32 @@ export class AuthService {
         user: newUser,
       };
     } else {
-      throw new BadRequestException(
-        'Something went wrong! User is not created!',
-      );
+      throw new BadRequestException(returnMessages.UserNotCreated);
     }
+  }
+
+  async login(loginDto: LoginDto) {
+    const user = await this.userRepository.findOneBy({ email: loginDto.email });
+    if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
+      throw new BadRequestException(returnMessages.EmailPasswordValidation);
+    }
+    if (user.emailVerifiedAt === null) {
+      throw new BadRequestException(returnMessages.EmailNotVerified);
+    }
+
+    const payload = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+    return {
+      message: returnMessages.UserSuccessfullyLoggedIn,
+      data: user,
+      access_token: this.jwtService.sign(payload, {
+        privateKey: process.env.JWT_SECRET,
+        expiresIn: process.env.JWT_EXPIRATION_TIME,
+      }),
+    };
   }
 }
