@@ -6,4 +6,7 @@ export const returnMessages = Object.freeze({
   EmailPasswordValidation: 'Invalid password or email!',
   EmailNotVerified: 'Email is not verified!',
   UserSuccessfullyLoggedIn: 'You have been successfully logged in!',
+  WorkoutOwnerInvite: 'Only workout owners can invite users!',
+  TokenNotValid: 'Token is not valid!',
+  TokenIsValid: 'Token is valid!',
 });

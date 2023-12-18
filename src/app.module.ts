@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { WorkoutModule } from './workout/workout.module';
+import { WorkoutModule } from './app/workout/workout.module';
 import { AuthModule } from './auth/auth.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { join } from 'path';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -36,18 +36,22 @@ import { AuthModule } from './auth/auth.module';
         },
       },
       template: {
-        dir: process.cwd() + '/templates',
+        dir: join(process.cwd() + 'templates'),
         adapter: new HandlebarsAdapter(),
         options: {
           strict: true,
         },
       },
     }),
-    UsersModule,
+    EventEmitterModule.forRoot(),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: +process.env.REDIS_PORT,
+      },
+    }),
     AuthModule,
     WorkoutModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
