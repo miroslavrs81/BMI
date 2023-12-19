@@ -14,7 +14,7 @@ import { WorkoutProcess } from './workout.process';
     TypeOrmModule.forFeature([Workout, User, UserToken, UserWorkout]),
     BullModule.registerQueue({
       limiter: { max: 5, duration: 5000 },
-      name: 'workspace',
+      name: 'workout',
     }),
   ],
   controllers: [WorkoutController],
