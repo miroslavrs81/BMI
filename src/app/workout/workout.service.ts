@@ -26,7 +26,7 @@ export class WorkoutService {
     private readonly userTokenRepository: Repository<UserToken>,
     @InjectRepository(UserWorkout)
     private readonly userWorkoutRepository: Repository<UserWorkout>,
-    @InjectQueue('workspace') private readonly mailerQueue: Queue,
+    @InjectQueue('workout') private readonly mailerQueue: Queue,
   ) {}
 
   public async inviteUsers(

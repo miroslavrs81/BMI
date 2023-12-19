@@ -43,6 +43,7 @@ import { BullModule } from '@nestjs/bull';
         },
       },
     }),
+    AuthModule,
     EventEmitterModule.forRoot(),
     BullModule.forRoot({
       redis: {
@@ -50,7 +51,6 @@ import { BullModule } from '@nestjs/bull';
         port: +process.env.REDIS_PORT,
       },
     }),
-    AuthModule,
     WorkoutModule,
   ],
 })
