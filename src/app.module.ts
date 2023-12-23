@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { join } from 'path';
 import { BullModule } from '@nestjs/bull';
+import { MainModule } from './app/main.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { BullModule } from '@nestjs/bull';
         port: +process.env.REDIS_PORT,
       },
     }),
+    MainModule,
     WorkoutModule,
   ],
 })
