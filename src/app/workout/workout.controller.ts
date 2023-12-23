@@ -11,9 +11,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/decorator/get-user.decorator';
 import { User } from 'src/entities/user.entity';
-import { WorkoutService } from './workout.service';
-import { VerifyTokenDto } from './dto/verify-token.dto';
 import { Workout } from 'src/entities/workout.entity';
+import { VerifyTokenDto } from './dto/verify-token.dto';
+import { WorkoutService } from './workout.service';
 
 @ApiTags('app-workout')
 @Controller('/app/workouts')

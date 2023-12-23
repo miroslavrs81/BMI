@@ -7,10 +7,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Workout } from './workout.entity';
-import { UserWorkout } from './user-workout.entity';
 import { Task } from './task.entity';
+import { UserWorkout } from './user-workout.entity';
 import { ValidationCode } from './validation-code.entity';
+import { Workout } from './workout.entity';
 
 @Entity({ name: 'users' })
 export class User {

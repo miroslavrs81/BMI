@@ -1,13 +1,13 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-import { WorkoutService } from './workout.service';
-import { WorkoutController } from './workout.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserToken } from 'src/entities/user-token.entity';
 import { UserWorkout } from 'src/entities/user-workout.entity';
 import { User } from 'src/entities/user.entity';
 import { Workout } from 'src/entities/workout.entity';
-import { UserToken } from 'src/entities/user-token.entity';
+import { WorkoutController } from './workout.controller';
 import { WorkoutProcess } from './workout.process';
+import { WorkoutService } from './workout.service';
 
 @Module({
   imports: [

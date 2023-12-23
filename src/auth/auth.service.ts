@@ -1,17 +1,17 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { UserDto } from './dto/register.dto';
-import { returnMessages } from 'src/helpers/error-message-mapper.helper';
-import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from './dto/loginUser.dto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MailerService } from '@nestjs-modules/mailer';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { User } from 'src/entities/user.entity';
 import { ValidationCode } from 'src/entities/validation-code.entity';
+import { returnMessages } from 'src/helpers/error-message-mapper.helper';
+import { Repository } from 'typeorm';
 import { VerificationCodeDto } from './dto/code-verification.dto';
+import { LoginDto } from './dto/loginUser.dto';
 import { RegenerateCodeDto } from './dto/regenerate-code.dto';
+import { UserDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {

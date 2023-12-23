@@ -5,8 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Workout } from './workout.entity';
 import { User } from './user.entity';
+import { Workout } from './workout.entity';
 
 @Entity({ name: 'users_workouts' })
 export class UserWorkout {

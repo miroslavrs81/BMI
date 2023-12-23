@@ -8,11 +8,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Summary } from './summary.entity';
+import { Task } from './task.entity';
+import { UserToken } from './user-token.entity';
 import { UserWorkout } from './user-workout.entity';
 import { User } from './user.entity';
-import { Task } from './task.entity';
-import { Summary } from './summary.entity';
-import { UserToken } from './user-token.entity';
 
 @Entity({ name: 'workouts' })
 export class Workout {
