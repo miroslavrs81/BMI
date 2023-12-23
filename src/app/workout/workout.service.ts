@@ -13,8 +13,8 @@ import { User } from 'src/entities/user.entity';
 import { Workout } from 'src/entities/workout.entity';
 import { returnMessages } from 'src/helpers/error-message-mapper.helper';
 import { Repository } from 'typeorm';
-import { VerifyTokenDto } from './dto/verify-token.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { VerifyTokenDto } from './dto/verify-token.dto';
 
 @Injectable()
 export class WorkoutService {

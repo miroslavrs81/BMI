@@ -1,14 +1,14 @@
-import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { BullModule } from '@nestjs/bull';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
+import { MainModule } from './app/main.module';
 import { WorkoutModule } from './app/workout/workout.module';
 import { AuthModule } from './auth/auth.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
-import { join } from 'path';
-import { BullModule } from '@nestjs/bull';
-import { MainModule } from './app/main.module';
 
 @Module({
   imports: [

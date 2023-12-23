@@ -7,9 +7,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Summary } from './summary.entity';
 import { User } from './user.entity';
 import { Workout } from './workout.entity';
-import { Summary } from './summary.entity';
 
 @Entity({ name: 'tasks' })
 export class Task {
