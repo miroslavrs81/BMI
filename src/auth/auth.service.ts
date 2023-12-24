@@ -12,6 +12,8 @@ import { VerificationCodeDto } from './dto/code-verification.dto';
 import { LoginDto } from './dto/loginUser.dto';
 import { RegenerateCodeDto } from './dto/regenerate-code.dto';
 import { UserDto } from './dto/register.dto';
+import { GooglePayload } from 'src/types/google-auth-payload.type';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -47,27 +49,27 @@ export class AuthService {
           email: createUserDto.email,
           password: createUserDto.password,
         });
-      } else {
-        this.eventEmitter.emit('user.created', newUser);
       }
+      this.eventEmitter.emit('user.created', newUser);
       delete newUser.password;
       return {
         user: newUser,
       };
-    } else {
-      throw new BadRequestException(returnMessages.UserNotCreated);
     }
-  }
-
-  async login(loginDto: LoginDto) {
+      throw new BadRequestException(returnMessages.CodeNotValid);
+    }
+  
+  async login(loginDto: LoginDto, withGoogleAuth = false) {
     const user = await this.userRepository.findOneBy({ email: loginDto.email });
-    if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
+    if (
+      (!user || !(await bcrypt.compare(loginDto.password, user.password))) &&
+      !withGoogleAuth
+    ) {
       throw new BadRequestException(returnMessages.EmailPasswordValidation);
     }
     if (user.emailVerifiedAt === null) {
       throw new BadRequestException(returnMessages.EmailNotVerified);
     }
-
     const payload = {
       id: user.id,
       name: user.name,
@@ -125,14 +127,12 @@ export class AuthService {
     if (!userCode.isValid) {
       throw new BadRequestException(returnMessages.CodeNotValid);
     }
-
     if (userCode.numberOfTries >= 3) {
       await this.validationCodeRepository.update(userCode.id, {
         isValid: false,
       });
       throw new BadRequestException(returnMessages.LimitReached);
     }
-
     if (userCode.code !== codeDto.token) {
       await this.validationCodeRepository.update(userCode.id, {
         numberOfTries: ++userCode.numberOfTries,
@@ -142,7 +142,6 @@ export class AuthService {
     await this.userRepository.update(user.id, {
       emailVerifiedAt: new Date(),
     });
-
     await this.validationCodeRepository.update(userCode.id, {
       numberOfTries: ++userCode.numberOfTries,
       isValid: false,
@@ -159,7 +158,22 @@ export class AuthService {
       { isValid: true, user: { id: user.id } },
       { isValid: false },
     );
-
     return await this.mailVerification(user);
   }
+
+    public async googleAuth(user: GooglePayload) {
+    const userExists = await this.userRepository.findOneBy({
+      email: user.email,
+    });
+    if (!userExists) {
+      return this.register({
+        name: user.firstName + ' ' + user.lastName,
+        email: user.email,
+        verifiedEmail: user.email,
+        password: uuidv4(),
+      });
+    }
+    return await this.login(userExists, true);
+  }
 }
+

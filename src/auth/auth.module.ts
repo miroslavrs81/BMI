@@ -7,6 +7,7 @@ import { MailVerificationListener } from 'src/events/mail-verification.listener'
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
+import { GoogleStrategy } from './google-oauth.strategy';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, MailVerificationListener],
+  providers: [AuthService, JwtStrategy, MailVerificationListener, GoogleStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
