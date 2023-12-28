@@ -15,6 +15,7 @@ import { returnMessages } from 'src/helpers/error-message-mapper.helper';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { VerifyTokenDto } from './dto/verify-token.dto';
+import { CreateWorkoutDto } from './dto/create-workout.dto';
 
 @Injectable()
 export class WorkoutService {
@@ -55,7 +56,7 @@ export class WorkoutService {
       const link =
         process.env.BASE_URL +
         process.env.APP_PORT +
-        `/app/workouts/verify?workspaceId=${workoutId}&token=${token}&email=${email}`;
+        `/app/workouts/verify?workoutId=${workoutId}&token=${token}&email=${email}`;
 
       this.userTokenRepository.save({
         userEmail: email,
@@ -117,5 +118,84 @@ export class WorkoutService {
   ): Promise<{ userExists: boolean }> {
     const user = await this.userRepository.findOneBy({ email });
     return { userExists: user ? true : false };
+  }
+
+  public async createWorkout(
+    createWorkoutDto: CreateWorkoutDto,
+    owner: User,
+  ): Promise<Workout> {
+    const workout = await this.workoutRepository.save({
+      ...createWorkoutDto,
+      owner,
+    });
+    await this.userWorkoutRepository.save({
+      workout: { id: workout.id },
+      user: owner,
+    });
+    return workout;
+  }
+
+  async findAllWorkouts(user: User, withDeleted: string): Promise<{ workouts: Workout[]; count: number }> {
+    const qb = this.workoutRepository
+      .createQueryBuilder('workouts')
+      .leftJoin('workouts.owner', 'owner')
+      .leftJoin('workouts.users', 'users_workouts');
+
+    if (withDeleted === 'true') {
+      qb.withDeleted().where(
+        'workouts.deletedAt IS NOT NULL AND owner.id = :ownerId',
+        { ownerId: user.id },
+      );
+    }
+    qb.orWhere(
+      'workouts.deletedAt IS NULL AND users_workouts.user = :userId',
+      { userId: user.id },
+    );
+    const [workouts, count] = await qb.getManyAndCount();
+    return { workouts, count };
+  }
+
+  async updateWorkout(
+    id: number,
+    updateWorkoutDto: CreateWorkoutDto,
+    user: User,
+  ) {
+    const workout = await this.workoutRepository
+      .createQueryBuilder('workouts')
+      .leftJoin('workouts.owner', 'owner')
+      .where({ id, owner: user.id })
+      .getOne();
+
+    if (!workout) {
+      throw new BadRequestException(returnMessages.WorkoutNotFound);
+    }
+
+    await this.workoutRepository.save({
+      ...workout,
+      workoutName: updateWorkoutDto.workoutName,
+      settings: updateWorkoutDto.settings,
+    });
+    return workout;
+  }
+
+  async removeWorkout(id: number, user: User) {
+    return await this.workoutRepository
+      .createQueryBuilder('workouts')
+      .leftJoin('workouts.owner', 'owner')
+      .softDelete()
+      .where('workouts.id = :id', { id })
+      .andWhere('owner.id = :ownerId', { ownerId: user.id })
+      .execute();
+  }
+
+  async restoreWorkout(id: number, user: User) {
+    return await this.workoutRepository
+      .createQueryBuilder('workouts')
+      .leftJoin('workouts.owner', 'owner')
+      .withDeleted()
+      .restore()
+      .where('workouts.id = :id', { id })
+      .andWhere('owner.id = :ownerId', { ownerId: user.id })
+      .execute();
   }
 }

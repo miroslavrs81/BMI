@@ -37,7 +37,7 @@ export class Workout {
   @Column({ type: 'varchar' })
   workoutName: string;
 
-  @Column({ type: 'json' })
+  @Column({ type: 'varchar' })
   settings: string;
 
   @Column({ type: 'boolean', default: true })
