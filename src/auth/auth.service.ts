@@ -7,13 +7,13 @@ import * as bcrypt from 'bcrypt';
 import { User } from 'src/entities/user.entity';
 import { ValidationCode } from 'src/entities/validation-code.entity';
 import { returnMessages } from 'src/helpers/error-message-mapper.helper';
+import { GooglePayload } from 'src/types/google-auth-payload.type';
 import { Repository } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 import { VerificationCodeDto } from './dto/code-verification.dto';
 import { LoginDto } from './dto/loginUser.dto';
 import { RegenerateCodeDto } from './dto/regenerate-code.dto';
 import { UserDto } from './dto/register.dto';
-import { GooglePayload } from 'src/types/google-auth-payload.type';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -56,9 +56,9 @@ export class AuthService {
         user: newUser,
       };
     }
-      throw new BadRequestException(returnMessages.CodeNotValid);
-    }
-  
+    throw new BadRequestException(returnMessages.CodeNotValid);
+  }
+
   async login(loginDto: LoginDto, withGoogleAuth = false) {
     const user = await this.userRepository.findOneBy({ email: loginDto.email });
     if (
@@ -92,7 +92,7 @@ export class AuthService {
     this.mailerService
       .sendMail({
         to: user.email,
-        from: process.env.APP_MAIL,
+        from: process.env.APP_EMAIL,
         subject: 'User verification code',
         template: 'verification-email',
         context: {
@@ -161,7 +161,7 @@ export class AuthService {
     return await this.mailVerification(user);
   }
 
-    public async googleAuth(user: GooglePayload) {
+  public async googleAuth(user: GooglePayload) {
     const userExists = await this.userRepository.findOneBy({
       email: user.email,
     });
@@ -176,4 +176,3 @@ export class AuthService {
     return await this.login(userExists, true);
   }
 }
-

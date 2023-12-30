@@ -14,8 +14,8 @@ import { Workout } from 'src/entities/workout.entity';
 import { returnMessages } from 'src/helpers/error-message-mapper.helper';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { VerifyTokenDto } from './dto/verify-token.dto';
 import { CreateWorkoutDto } from './dto/create-workout.dto';
+import { VerifyTokenDto } from './dto/verify-token.dto';
 
 @Injectable()
 export class WorkoutService {
@@ -135,7 +135,10 @@ export class WorkoutService {
     return workout;
   }
 
-  async findAllWorkouts(user: User, withDeleted: string): Promise<{ workouts: Workout[]; count: number }> {
+  async findAllWorkouts(
+    user: User,
+    withDeleted: string,
+  ): Promise<{ workouts: Workout[]; count: number }> {
     const qb = this.workoutRepository
       .createQueryBuilder('workouts')
       .leftJoin('workouts.owner', 'owner')
@@ -147,10 +150,9 @@ export class WorkoutService {
         { ownerId: user.id },
       );
     }
-    qb.orWhere(
-      'workouts.deletedAt IS NULL AND users_workouts.user = :userId',
-      { userId: user.id },
-    );
+    qb.orWhere('workouts.deletedAt IS NULL AND users_workouts.user = :userId', {
+      userId: user.id,
+    });
     const [workouts, count] = await qb.getManyAndCount();
     return { workouts, count };
   }

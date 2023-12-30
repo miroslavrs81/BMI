@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
+import { GetUser } from 'src/decorator/get-user.decorator';
+import { GooglePayload } from 'src/types/google-auth-payload.type';
 import { AuthService } from './auth.service';
 import { VerificationCodeDto } from './dto/code-verification.dto';
 import { LoginDto } from './dto/loginUser.dto';
 import { RegenerateCodeDto } from './dto/regenerate-code.dto';
 import { UserDto } from './dto/register.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/decorator/get-user.decorator';
-import { GooglePayload } from 'src/types/google-auth-payload.type';
 
 @ApiTags('auth')
 @Controller('/auth')

@@ -14,4 +14,7 @@ export const returnMessages = Object.freeze({
   TokenIsValid: 'Token is valid!',
   LimitReached: 'Limit reached!',
   BadUserCode: 'Bad Code!',
+  UserDoesNotBelong: 'User does not belong to this workout!',
+  TaskNotFound: 'Task not found!',
+  InvalidDate: 'Invalid date!',
 });
