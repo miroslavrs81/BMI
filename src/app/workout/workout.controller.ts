@@ -17,9 +17,9 @@ import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/decorator/get-user.decorator';
 import { User } from 'src/entities/user.entity';
 import { Workout } from 'src/entities/workout.entity';
+import { CreateWorkoutDto } from './dto/create-workout.dto';
 import { VerifyTokenDto } from './dto/verify-token.dto';
 import { WorkoutService } from './workout.service';
-import { CreateWorkoutDto } from './dto/create-workout.dto';
 
 @ApiTags('app-workout')
 @Controller('/app/workouts')
@@ -77,10 +77,7 @@ export class WorkoutController {
     @Body() createWorkoutDto: CreateWorkoutDto,
     @GetUser() user: User,
   ): Promise<Workout> {
-    return await this.workoutService.createWorkout(
-      createWorkoutDto,
-      user,
-    );
+    return await this.workoutService.createWorkout(createWorkoutDto, user);
   }
 
   @ApiBearerAuth()
@@ -102,11 +99,7 @@ export class WorkoutController {
     @Body() updateWorkoutDto: CreateWorkoutDto,
     @GetUser() user: User,
   ) {
-    return await this.workoutService.updateWorkout(
-      +id,
-      updateWorkoutDto,
-      user,
-    );
+    return await this.workoutService.updateWorkout(+id, updateWorkoutDto, user);
   }
 
   @ApiBearerAuth()
